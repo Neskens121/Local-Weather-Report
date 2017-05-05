@@ -73,10 +73,13 @@
 
 		// using maxmind API for providing basic user information, city countrycode etc, through one of API methods geoip2.city
 		var onSuccess = function(location){
-			var city = location['city']['names']['en'];
-			var country = location['registered_country']['iso_code'];
+			console.log(location)
+			var longitude = location['location']['longitude'];
+			var latitude = location['location']['latitude'];
+			//var city = location['city']['names']['en'];
+			//var country = location['registered_country']['iso_code'];
 
-			getWeatherInfo(city, country).then(function(result){
+			getWeatherInfo(longitude, latitude).then(function(result){
 				console.log(result)
 				var weather = result['list'][1]['weather'][0];
 				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
@@ -88,8 +91,9 @@
 		};
 
 		//actually you get Promise of WeatherInfo
-		function getWeatherInfo(city, country){
-			return fetch('http://api.openweathermap.org/data/2.5/forecast?q=' + city + ',' + country + ',&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4').then(function(response) { 
+		function getWeatherInfo(longitude, latitude){
+						//http://api.openweathermap.org/data/2.5/forecast?lat=44.8186&lon=20.4681&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4
+			return fetch('http://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4').then(function(response) { 
 				return response.json();
 			})
 		}
