@@ -46,6 +46,8 @@
 			getWeatherInfo(longitude, latitude).then(function(result){
 				console.log(result)
 				var weather = result['list'][1]['weather'][0];
+				console.log(result['list'][0]['weather'][0]['id'])
+				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-day-' + result['list'][0]['weather'][0]['id']);
 				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
 			})
 			
@@ -87,7 +89,7 @@
 <body>
 	<div>sabnsa</div>
 	<img id ="weatherIcon" src="">
-	<div><i class="wi wi-day-snow-thunderstorm"></i></div>
+	<div><i id="weather_Icon" class="wi wi-owm-day-301"></i></div>
 	<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />  
 	<input type="hidden" id="city2" name="city2" />
 	<input type="hidden" id="cityLat" name="cityLat" />
