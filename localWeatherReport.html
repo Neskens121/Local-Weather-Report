@@ -63,7 +63,6 @@
 	<script src="//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js" type="text/javascript"></script>
 	<script src="http://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDM-X-fWiW6i_0xkEOdyJY_kNEdLZTYiDc" type="text/javascript"></script>
 	<script>
-		window.onload = initialize();
 		var locationInfo = {
 			city: '',
 			countrycode: '',
@@ -71,12 +70,7 @@
 			longitude: ''
 		}
 
-		var geocoder;
-
-		function initialize() {
-			geocoder = new google.maps.Geocoder();
-		}
-
+		
 		function supportsGeolocation() {
 			return 'geolocation' in navigator;
 		}
@@ -86,46 +80,18 @@
 		}
 
 		function setLocationOfCity(location){
-			locationInfo.longitude = location.coords.latitude;
-			locationInfo.longitude = location.coords.longitude;
-			reverseGeolocation(location.coords.latitude, location.coords.longitude)
+			var longitude = location.coords.longitude;
+			var latitude = location.coords.latitude;
+			getWeatherInfo(longitude, latitude).then(function(result){
+				console.log(result)
+				var weather = result['list'][1]['weather'][0];
+				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
+			})
 		}
 
 		function geoErrorCallback(err){
 
 		}
-
-		function reverseGeolocation(lat, lng) {
-			var latlng = new google.maps.LatLng(lat, lng);
-			geocoder.geocode({'latLng': latlng}, function(results, status) {
-				var city;
-				if (status == google.maps.GeocoderStatus.OK) {
-					// If there is some result	
-					if (results[1]) {
-						console.log(results[0].formatted_address)
-						// For each instance of result check all its address_components
-						for (var i=0; i<results[0].address_components.length; i++) {
-							// For every address_component check its property 'types' which is array
-							for (var b=0;b<results[0].address_components[i].types.length;b++) {
-								// if any member of types array is equal to "administrative_area_level_2" asign that address_component
-								// there are different types that might hold a city, admin_area_lvl_2 usually is for Serbia
-								if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
-									city = results[0].address_components[i];
-									alert(city.short_name)
-									//document.getElementById('city2').value = city.short_name;
-									return city.short_name;
-								}
-							}
-						}
-					} else {
-						alert("No results found");
-					}
-				} else {
-					alert("Geocoder failed due to: " + status);
-				}
-			});
-		}
-
 
 
 		// using maxmind API for providing basic user information, city countrycode etc, through one of API methods geoip2.city
@@ -133,12 +99,12 @@
 			console.log(location)
 			var longitude = location['location']['longitude'];
 			var latitude = location['location']['latitude'];
-			//var city = location['city']['names']['en'];
-			//var country = location['registered_country']['iso_code'];
 
 			getWeatherInfo(longitude, latitude).then(function(result){
 				console.log(result)
 				var weather = result['list'][1]['weather'][0];
+				console.log(result['list'][0]['weather'][0]['id'])
+				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-day-' + result['list'][0]['weather'][0]['id']);
 				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
 			})
 			
@@ -158,6 +124,10 @@
 					geoip2.city(onSuccess, onError);
 					getGeolocationInfo()
 				</script>
+		geoip2.city(onSuccess, onError);
+		// Use Geolocation API, add eventlistener on some button
+		//getGeolocationInfo()
+	</script>
 
 
 				<script type="text/javascript">
@@ -184,7 +154,7 @@
 
 	<div>sabnsa</div>
 	<img id ="weatherIcon" src="">
-	<div><i class="wi wi-day-snow-thunderstorm"></i></div>
+	<div><i id="weather_Icon" class="wi wi-owm-day-301"></i></div>
 	<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />  
 	<input type="hidden" id="city2" name="city2" />
 	<input type="hidden" id="cityLat" name="cityLat" />
