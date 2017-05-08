@@ -90,17 +90,32 @@
 </script>
 </head>
 <body>
-	<div >
+	<div class="container">
+	<div class="row">
 		<input type="checkbox" id="switch1" name="switch1" class="switch" />
 		<label for="switch1">first switch</label>
 	</div>
 
-	<div>sabnsa</div>
-	<img id ="weatherIcon" src="">
-	<div><i id="weather_Icon" class="wi wi-owm-day-301"></i></div>
-	<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />  
-	<input type="hidden" id="city2" name="city2" />
-	<input type="hidden" id="cityLat" name="cityLat" />
-	<input type="hidden" id="cityLng" name="cityLng" />  
+	<div class="row">sabnsa</div>
+	<div class="row">
+		<div class="six columns">
+			<img id ="weatherIcon" src="">
+		</div>
+		<div class="six columns">
+			<i id="weather_Icon" class="wi wi-owm-day-301"></i>
+		</div>
+	</div>
+	<div class="row">
+		<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />
+	</div>
+	<div class="row">
+		<input type="hidden" id="city2" name="city2" />
+	</div>
+	<div class="row">
+		<input type="hidden" id="cityLat" name="cityLat" />
+	</div>
+	<div class="row">
+		<input type="hidden" id="cityLng" name="cityLng" />
+	</div>
 </body>
 </html>
