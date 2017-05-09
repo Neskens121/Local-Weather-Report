@@ -2,8 +2,20 @@ div {
 	border: solid;
 	text-align: center;
 }
+
+label.celsius{
+	float: left;
+	line-height: 1.6em;
+	margin: 0.2em 0.4em;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 input.switch:empty{
-			margin-left: -999px;
+			margin-left: -9999px;
 		}
 		input.switch:empty ~ label
 		{
@@ -57,3 +69,26 @@ input.switch:empty{
 			/*margin-left: 2em;*/
 			transform: translateX(1.8em);
 		}
+
+
+
+.helperContainer {
+    display: table;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+}
+.helper {
+    #position: absolute;
+    #top: 50%;
+    display: table-cell;
+    vertical-align: middle;
+}
+.content {
+    #position: relative;
+    #top: -50%;
+    margin: 0 auto;
+    width: 200px;
+    border: 1px solid orange;
+}

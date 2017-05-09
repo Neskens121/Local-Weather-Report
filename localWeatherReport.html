@@ -91,20 +91,71 @@
 </head>
 <body>
 	<div class="container">
+	<!--
 	<div class="row">
-		<input type="checkbox" id="switch1" name="switch1" class="switch" />
-		<label for="switch1">first switch</label>
+	
+		<div class="one columns offset-by-five">
+			<h1>0</h1>
+		</div>
+		<div class="three columns" style="position: relative;">
+			
+			<div class="helperContainer">
+			<h4>0</h4>
+			<div class="helper">
+				<div class="content">
+					<label for="switch1" class="celsius">C</label>
+					<input type="checkbox" id="switch1" name="switch1" class="switch" />
+					<label for="switch1">F</label>
+				</div>
+			</div>
+			</div>
+		</div>
 	</div>
-
+	-->
+	<div class="row">
+		<div class="one columns offset-by-five">
+			<h1>0</h1>
+		</div>
+		<div class="three columns">
+			<label for="switch1" class="celsius">C</label>
+			<input type="checkbox" id="switch1" name="switch1" class="switch" />
+			<label for="switch1">F</label>
+		</div>
+	</div>
 	<div class="row">sabnsa</div>
 	<div class="row">
-		<div class="six columns">
+		<div class="three columns offset-by-three">
 			<img id ="weatherIcon" src="">
 		</div>
-		<div class="six columns">
+		<div class="three columns">
 			<i id="weather_Icon" class="wi wi-owm-day-301"></i>
 		</div>
 	</div>
+
+	<div class="row">
+	    <div class="three columns offset-by-three">
+	      <i class="wi wi-small-craft-advisory"></i>
+	      <span id="wind"></span> <span id="speedUnit">km/h</span>
+	    </div>
+	    <div class="three columns">
+	      <i class="wi wi-humidity"></i>
+	      <span id="humidity"></span>
+	    </div>
+    </div>
+
+    <div class="row">
+	    <div class="three columns offset-by-three">
+	      <i class="wi wi-wind"></i>
+	      <span id="wdir"></span>
+	    </div>
+	    <div class="three columns">
+	      <i class="wi wi-barometer"></i>
+	      <span id="barometer"></span>
+	    </div>
+    </div>
+	
+
+
 	<div class="row">
 		<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />
 	</div>
