@@ -49,12 +49,22 @@
 			var longitude = location['location']['longitude'];
 			var latitude = location['location']['latitude'];
 
+
+			getCurrentTime(longitude, latitude).then(function(result){
+				console.log(result)
+				document.getElementById('currentTime').innerHTML = result['time'];
+			})
+
 			getWeatherInfo(longitude, latitude).then(function(result){
 				console.log(result);
-				document.getElementById('temperatureElement').innerHTML = parseInt(result['list'][0]['main']['temp'] - 273.15);
-				var weather = result['list'][1]['weather'][0];
-				console.log(result['list'][0]['weather'][0]['id'])
-				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-day-' + result['list'][0]['weather'][0]['id']);
+
+				document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
+				var currentTime = result
+				var weather = result['weather'][0];
+				var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+				console.log(dayOrNight);
+				console.log(weather['id'])
+				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-'+ dayOrNight + '-' + weather['id']);
 				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
 			})
 			
@@ -63,10 +73,17 @@
 
 		};
 
+
+		function getCurrentTime(longitude, latitude){
+			return fetch('http://api.geonames.org/timezoneJSON?lat=' + latitude +'&lng=' + longitude + '&username=neskens121').then(function(response) { 
+							return response.json();
+						})
+		}
+
 		//actually you get Promise of WeatherInfo
 		function getWeatherInfo(longitude, latitude){
 						//http://api.openweathermap.org/data/2.5/forecast?lat=44.8186&lon=20.4681&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4
-						return fetch('http://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4').then(function(response) { 
+						return fetch('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&units=metric').then(function(response) { 
 							return response.json();
 						})
 		}
@@ -129,7 +146,8 @@
 			<label id="transitionTrigger" for="switch1">F</label>
 		</div>
 	</div>
-	<div class="row">sabnsa</div>
+	<div class="row" id="currentTown">sabnsa</div>
+	<div class="row" id="currentTime">sabnsa</div>
 	<div class="row">
 		<div class="three columns offset-by-three">
 			<img id ="weatherIcon" src="">
@@ -206,21 +224,38 @@
           var longitude = place['geometry']['location'].lng();
           //console.log(place.geometry.loacation.lat())
 
+
+          getCurrentTime(longitude, latitude).then(function(result){
+          		console.log(result)
+				document.getElementById('currentTime').innerHTML = result['time'];
+			})
+
 		getWeatherInfo(longitude, latitude).then(function(result){
 				console.log(result);
-				document.getElementById('temperatureElement').innerHTML = parseInt(result['list'][0]['main']['temp'] - 273.15);
-				var weather = result['list'][1]['weather'][0];
-				console.log(result['list'][0]['weather'][0]['id'])
-				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-day-' + result['list'][0]['weather'][0]['id']);
+
+				document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
+				var currentTime = result
+				var weather = result['weather'][0];
+				var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+				console.log(dayOrNight);
+				console.log(weather['id'])
+				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-'+ dayOrNight + '-' + weather['id']);
 				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
 			})
 
         });
 
 
+        function getCurrentTime(longitude, latitude){
+			return fetch('http://api.geonames.org/timezoneJSON?lat=' + latitude +'&lng=' + longitude + '&username=neskens121').then(function(response) { 
+							return response.json();
+						})
+		}
+
+
         function getWeatherInfo(longitude, latitude){
 						//http://api.openweathermap.org/data/2.5/forecast?lat=44.8186&lon=20.4681&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4
-						return fetch('http://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4').then(function(response) { 
+						return fetch('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&units=metric').then(function(response) { 
 							return response.json();
 						})
 		}	
