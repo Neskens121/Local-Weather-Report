@@ -11,88 +11,6 @@
 	<script src="http://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDM-X-fWiW6i_0xkEOdyJY_kNEdLZTYiDc" type="text/javascript"></script>
 
 
-	<script>
-		var locationInfo = {
-			city: '',
-			countrycode: '',
-			latitude: '', 
-			longitude: ''
-		}
-
-		
-		function supportsGeolocation() {
-			return 'geolocation' in navigator;
-		}
-
-		function getGeolocationInfo(){
-			supportsGeolocation() && navigator.geolocation.getCurrentPosition(setLocationOfCity, geoErrorCallback)
-		}
-
-		function setLocationOfCity(location){
-			var longitude = location.coords.longitude;
-			var latitude = location.coords.latitude;
-			getWeatherInfo(longitude, latitude).then(function(result){
-				console.log(result)
-				var weather = result['list'][1]['weather'][0];
-				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
-			})
-		}
-
-		function geoErrorCallback(err){
-
-		}
-
-
-		// using maxmind API for providing basic user information, city countrycode etc, through one of API methods geoip2.city
-		var onSuccess = function(location){
-			console.log(location)
-			var longitude = location['location']['longitude'];
-			var latitude = location['location']['latitude'];
-
-
-			getCurrentTime(longitude, latitude).then(function(result){
-				console.log(result)
-				document.getElementById('currentTime').innerHTML = result['time'];
-			})
-
-			getWeatherInfo(longitude, latitude).then(function(result){
-				console.log(result);
-
-				document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
-				var currentTime = result
-				var weather = result['weather'][0];
-				var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
-				console.log(dayOrNight);
-				console.log(weather['id'])
-				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-'+ dayOrNight + '-' + weather['id']);
-				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
-			})
-			
-		}
-		var onError = function(error){
-
-		};
-
-
-		function getCurrentTime(longitude, latitude){
-			return fetch('http://api.geonames.org/timezoneJSON?lat=' + latitude +'&lng=' + longitude + '&username=neskens121').then(function(response) { 
-							return response.json();
-						})
-		}
-
-		//actually you get Promise of WeatherInfo
-		function getWeatherInfo(longitude, latitude){
-						//http://api.openweathermap.org/data/2.5/forecast?lat=44.8186&lon=20.4681&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4
-						return fetch('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&units=metric').then(function(response) { 
-							return response.json();
-						})
-		}
-	
-		geoip2.city(onSuccess, onError);
-		// Use Geolocation API, add eventlistener on some button
-		//getGeolocationInfo()
-	</script>
-
 	<script type="text/javascript">
 	// using Google API for adding autocomplete functionality with generating information, longitude and latitude etc, about city that is being searched
 	// solution was found as answer on following post http://stackoverflow.com/questions/13478646/google-map-api-get-latitude-and-longitude-from-autocomplete-without-map
@@ -111,90 +29,181 @@
 </head>
 <body>
 	<div class="container">
-	<!--
-	<div class="row">
-	
-		<div class="one columns offset-by-five">
-			<h1>0</h1>
-		</div>
-		<div class="three columns" style="position: relative;">
-			
-			<div class="helperContainer">
-			<h4>0</h4>
-			<div class="helper">
-				<div class="content">
-					<label for="switch1" class="celsius">C</label>
-					<input type="checkbox" id="switch1" name="switch1" class="switch" />
-					<label for="switch1">F</label>
-				</div>
+
+		<div class="row">
+			<div class="three columns offset-by-three">
+				<h1>
+					<span id="temperatureElement">0</span>
+					<span id="tempUnit">&degC</span>
+				</h1>
 			</div>
+
+			<div class="three columns">
+				<label for="switch1" class="celsius">C</label>
+				<input type="checkbox" id="switch1" name="switch1" class="switch" />
+				<label id="transitionTrigger" for="switch1">F</label>
 			</div>
 		</div>
-	</div>
-	-->
-	<div class="row">
-		<div class="three columns offset-by-three">
-			<h1>
-			 <span id="temperatureElement">0</span>
-			 <span id="tempUnit">&degC</span>
-			</h1>
+		<div class="row" id="currentTown">sabnsa</div>
+		<div class="row" id="currentTime">sabnsa</div>
+		<div class="row">
+			<div class="three columns offset-by-three">
+				<img id ="weatherIcon" src="">
+			</div>
+			<div class="three columns">
+				<i id="weather_Icon" class="wi wi-owm-day-301"></i>
+			</div>
 		</div>
 
-		<div class="three columns">
-			<label for="switch1" class="celsius">C</label>
-			<input type="checkbox" id="switch1" name="switch1" class="switch" />
-			<label id="transitionTrigger" for="switch1">F</label>
+		<div class="row">
+			<div class="three columns offset-by-three">
+				<i class="wi wi-small-craft-advisory"></i>
+				<span id="wind"></span> <span id="speedUnit">km/h</span>
+			</div>
+			<div class="three columns">
+				<i class="wi wi-humidity"></i>
+				<span id="humidity"></span>
+			</div>
 		</div>
-	</div>
-	<div class="row" id="currentTown">sabnsa</div>
-	<div class="row" id="currentTime">sabnsa</div>
-	<div class="row">
-		<div class="three columns offset-by-three">
-			<img id ="weatherIcon" src="">
+
+		<div class="row">
+			<div class="three columns offset-by-three">
+				<i class="wi wi-wind"></i>
+				<span id="wdir"></span>
+			</div>
+			<div class="three columns">
+				<i class="wi wi-barometer"></i>
+				<span id="barometer"></span>
+			</div>
 		</div>
-		<div class="three columns">
-			<i id="weather_Icon" class="wi wi-owm-day-301"></i>
+		<div class="row">
+			<input id="autoComplete" type="text" placeholder="Enter a location" autocomplete="off">
 		</div>
-	</div>
-
-	<div class="row">
-	    <div class="three columns offset-by-three">
-	      <i class="wi wi-small-craft-advisory"></i>
-	      <span id="wind"></span> <span id="speedUnit">km/h</span>
-	    </div>
-	    <div class="three columns">
-	      <i class="wi wi-humidity"></i>
-	      <span id="humidity"></span>
-	    </div>
-    </div>
-
-    <div class="row">
-	    <div class="three columns offset-by-three">
-	      <i class="wi wi-wind"></i>
-	      <span id="wdir"></span>
-	    </div>
-	    <div class="three columns">
-	      <i class="wi wi-barometer"></i>
-	      <span id="barometer"></span>
-	    </div>
-    </div>
-	<div class="row">
-		<input id="autoComplete" type="text" placeholder="Enter a location" autocomplete="off">
-	</div>
 
 
-	<div class="row">
-		<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />
-	</div>
-	<div class="row">
-		<input type="hidden" id="city2" name="city2" />
-	</div>
-	<div class="row">
-		<input type="hidden" id="cityLat" name="cityLat" />
-	</div>
-	<div class="row">
-		<input type="hidden" id="cityLng" name="cityLng" />
-	</div>
+		<div class="row">
+			<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />
+		</div>
+		<div class="row">
+			<input type="hidden" id="city2" name="city2" />
+		</div>
+		<div class="row">
+			<input type="hidden" id="cityLat" name="cityLat" />
+		</div>
+		<div class="row">
+			<input type="hidden" id="cityLng" name="cityLng" />
+		</div>
+
+</div>
+<script>
+	var input = document.getElementById('autoComplete');
+	var autocomplete = new google.maps.places.Autocomplete(input);
+	autocomplete.addListener('place_changed', function() {
+		var place = autocomplete.getPlace();
+		document.getElementById('currentTown').innerHTML = place['formatted_address'];
+		var latitude = place['geometry']['location'].lat();
+		var longitude = place['geometry']['location'].lng();
+        //console.log(place.geometry.loacation.lat())
+
+
+        getCurrentTime(longitude, latitude).then(function(result){
+        	console.log(result)
+        	document.getElementById('currentTime').innerHTML = result['time'];
+        })
+
+        getWeatherInfo(longitude, latitude).then(function(result){
+        	console.log(result);
+
+        	document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
+        	var currentTime = result
+        	var weather = result['weather'][0];
+        	var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+        	console.log(dayOrNight);
+        	console.log(weather['id'])
+        	document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-'+ dayOrNight + '-' + weather['id']);
+        	document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
+        })
+
+    });
+
+
+	function supportsGeolocation() {
+		return 'geolocation' in navigator;
+	}
+
+	function getGeolocationInfo(){
+		supportsGeolocation() && navigator.geolocation.getCurrentPosition(setLocationOfCity, geoErrorCallback)
+	}
+
+	function setLocationOfCity(location){
+		var longitude = location.coords.longitude;
+		var latitude = location.coords.latitude;
+		getWeatherInfo(longitude, latitude).then(function(result){
+			console.log(result)
+			var weather = result['list'][1]['weather'][0];
+			document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
+		})
+	}
+
+	function geoErrorCallback(err){
+
+	}
+
+
+	// using maxmind API for providing basic user information, city countrycode etc, through one of API methods geoip2.city
+	var onSuccess = function(location){
+		console.log(location);
+		var timeZone = location['location']['time_zone']; 
+		var cityName = timeZone.slice((timeZone).indexOf('/') + 1);
+		var countryName = location['country']['names']['en']
+		document.getElementById('currentTown').innerHTML = cityName + ', ' + countryName;
+
+		var longitude = location['location']['longitude'];
+		var latitude = location['location']['latitude'];
+
+
+		getCurrentTime(longitude, latitude).then(function(result){
+			console.log(result)
+			document.getElementById('currentTime').innerHTML = result['time'];
+		})
+
+		getWeatherInfo(longitude, latitude).then(function(result){
+			console.log(result);
+
+			document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
+			var currentTime = result
+			var weather = result['weather'][0];
+			var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+			console.log(dayOrNight);
+			console.log(weather['id'])
+			document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-'+ dayOrNight + '-' + weather['id']);
+			document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
+		})
+
+	}
+	var onError = function(error){
+
+	};
+
+
+	function getCurrentTime(longitude, latitude){
+		return fetch('http://api.geonames.org/timezoneJSON?lat=' + latitude +'&lng=' + longitude + '&username=neskens121').then(function(response) { 
+			return response.json();
+		})
+	}
+
+	//actually you get Promise of WeatherInfo
+	function getWeatherInfo(longitude, latitude){
+		return fetch('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&units=metric').then(function(response) { 
+			return response.json();
+		})
+	}
+
+	geoip2.city(onSuccess, onError);
+	// Use Geolocation API, add eventlistener on some button
+	//getGeolocationInfo()
+	</script>
+
 	<script>
 		var temperatureElement = document.getElementById('temperatureElement');
 		var tempUnit = document.getElementById('tempUnit');
@@ -213,52 +222,6 @@
 			temperatureElement.innerHTML = parseInt(temperature) + (fahrenheit || '-1') *32;
 			fahrenheit ? tempUnit.innerHTML = '&degF': tempUnit.innerHTML = '&degC';
 		}
-	</script>
-	<script>
-		var input = document.getElementById('autoComplete');
-		var autocomplete = new google.maps.places.Autocomplete(input);
-		autocomplete.addListener('place_changed', function() {
-          
-          var place = autocomplete.getPlace();
-          var latitude = place['geometry']['location'].lat();
-          var longitude = place['geometry']['location'].lng();
-          //console.log(place.geometry.loacation.lat())
-
-
-          getCurrentTime(longitude, latitude).then(function(result){
-          		console.log(result)
-				document.getElementById('currentTime').innerHTML = result['time'];
-			})
-
-		getWeatherInfo(longitude, latitude).then(function(result){
-				console.log(result);
-
-				document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
-				var currentTime = result
-				var weather = result['weather'][0];
-				var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
-				console.log(dayOrNight);
-				console.log(weather['id'])
-				document.getElementById("weather_Icon").className  = document.getElementById("weather_Icon").className.replace(/wi wi-owm-day-[0-9]{3}/g, 'wi wi-owm-'+ dayOrNight + '-' + weather['id']);
-				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
-			})
-
-        });
-
-
-        function getCurrentTime(longitude, latitude){
-			return fetch('http://api.geonames.org/timezoneJSON?lat=' + latitude +'&lng=' + longitude + '&username=neskens121').then(function(response) { 
-							return response.json();
-						})
-		}
-
-
-        function getWeatherInfo(longitude, latitude){
-						//http://api.openweathermap.org/data/2.5/forecast?lat=44.8186&lon=20.4681&APPID=1606cd61e974fa5479b45020b25cbd13&cnt=4
-						return fetch('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&units=metric').then(function(response) { 
-							return response.json();
-						})
-		}	
 	</script>
 </body>
 </html>
