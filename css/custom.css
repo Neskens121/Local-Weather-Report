@@ -92,3 +92,14 @@ input.switch:empty{
     width: 200px;
     border: 1px solid orange;
 }
+
+#autoComplete {
+	background: url('../magnifying-glass-2-24.gif') no-repeat scroll 95% 50%;;
+	padding-right: 30px;
+	transition: background-image 0.5s;
+}
+
+#autoComplete:hover {
+	background: url('../magnifying-glass-2-32.gif') no-repeat scroll 95% 50%;;
+	padding-right: 30px;
+}
