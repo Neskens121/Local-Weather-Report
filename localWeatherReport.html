@@ -32,7 +32,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="three columns offset-by-three">
-				<p><a href="#" class="button">Refresh</a></p>
+				<p><a href="#" id="refreshBtn" class="button">Refresh</a></p>
 			</div>
 			<div class="three columns">
 				<p><a id="geolocationBtn" href="#" class="button">Use geolocation</a></p>
@@ -105,7 +105,14 @@
 </div>
 <script>
 	var geolocationBtn =  document.getElementById('geolocationBtn');
-	geolocationBtn.addEventListener('click', getGeolocationInfo, false)
+	geolocationBtn.addEventListener('click', getGeolocationInfo, false);
+
+	var refreshBtn = document.getElementById('refreshBtn');
+	var refreshFn = function(){
+		return geoip2.city(onSuccess, onError);
+	}
+
+	refreshBtn.addEventListener('click', refreshFn, false);
 
 
 	var input = document.getElementById('autoComplete');
