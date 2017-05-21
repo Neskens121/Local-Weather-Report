@@ -29,7 +29,7 @@
 </script>
 </head>
 <body>
-	<div class="container">
+	<div class="container" id="container">
 		<div class="row">
 			<div class="three columns offset-by-three">
 				<p><a href="#" id="refreshBtn" class="button">Refresh</a></p>
@@ -132,11 +132,13 @@
 
         getWeatherInfo(longitude, latitude).then(function(result){
         	console.log(result);
-
+        	document.body.classList = "";
+        	document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
         	document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
         	var currentTime = result
         	var weather = result['weather'][0];
         	var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+
         	console.log(dayOrNight);
         	console.log(weather['id'])
         	document.getElementById("weather_Icon").className = 'wi wi-owm-'+ dayOrNight + '-' + weather['id'];
@@ -165,6 +167,9 @@
 
 		getWeatherInfo(longitude, latitude).then(function(result){
 			console.log(result);
+
+			document.body.classList = "";
+			document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
 			document.getElementById('currentTown').innerHTML = result['name']
 			document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
 			document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
@@ -205,6 +210,8 @@
 		getWeatherInfo(longitude, latitude).then(function(result){
 			console.log(result);
 
+			document.body.classList = "";
+			document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
 			document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
 			document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
 			document.getElementById('barometer').innerHTML = parseInt(result['main']['pressure']);
@@ -235,6 +242,13 @@
 		return fetch('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=1606cd61e974fa5479b45020b25cbd13&units=metric').then(function(response) { 
 			return response.json();
 		})
+	}
+
+	function determineTypeOfWeather(temperature, clouds) {
+		console.log(temperature);
+		if(temperature < 10){ return 'cold';}
+		else if( temperature < 25) { return 'normal';}
+		else {return 'sunny';}	
 	}
 
 	geoip2.city(onSuccess, onError);
