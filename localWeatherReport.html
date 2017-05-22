@@ -29,7 +29,7 @@
 </script>
 </head>
 <body>
-	<div class="container" id="container">
+	<div class="container" id="container" style="z-index: 1000">
 		<div class="row">
 			<div class="three columns offset-by-three">
 				<p><a href="#" id="refreshBtn" class="button">Refresh</a></p>
@@ -102,26 +102,26 @@
 			<input type="hidden" id="cityLng" name="cityLng" />
 		</div>
 
-</div>
-<script>
-	var geolocationBtn =  document.getElementById('geolocationBtn');
-	geolocationBtn.addEventListener('click', getGeolocationInfo, false);
+	</div>
+	<script>
+		var geolocationBtn =  document.getElementById('geolocationBtn');
+		geolocationBtn.addEventListener('click', getGeolocationInfo, false);
 
-	var refreshBtn = document.getElementById('refreshBtn');
-	var refreshFn = function(){
-		return geoip2.city(onSuccess, onError);
-	}
+		var refreshBtn = document.getElementById('refreshBtn');
+		var refreshFn = function(){
+			return geoip2.city(onSuccess, onError);
+		}
 
-	refreshBtn.addEventListener('click', refreshFn, false);
+		refreshBtn.addEventListener('click', refreshFn, false);
 
 
-	var input = document.getElementById('autoComplete');
-	var autocomplete = new google.maps.places.Autocomplete(input);
-	autocomplete.addListener('place_changed', function() {
-		var place = autocomplete.getPlace();
-		document.getElementById('currentTown').innerHTML = place['formatted_address'];
-		var latitude = place['geometry']['location'].lat();
-		var longitude = place['geometry']['location'].lng();
+		var input = document.getElementById('autoComplete');
+		var autocomplete = new google.maps.places.Autocomplete(input);
+		autocomplete.addListener('place_changed', function() {
+			var place = autocomplete.getPlace();
+			document.getElementById('currentTown').innerHTML = place['formatted_address'];
+			var latitude = place['geometry']['location'].lat();
+			var longitude = place['geometry']['location'].lng();
         //console.log(place.geometry.loacation.lat())
 
 
@@ -148,46 +148,46 @@
     });
 
 
-	function supportsGeolocation() {
-		return 'geolocation' in navigator;
-	}
+		function supportsGeolocation() {
+			return 'geolocation' in navigator;
+		}
 
-	function getGeolocationInfo(){
-		supportsGeolocation() && navigator.geolocation.getCurrentPosition(setLocationOfCity, geoErrorCallback)
-	}
+		function getGeolocationInfo(){
+			supportsGeolocation() && navigator.geolocation.getCurrentPosition(setLocationOfCity, geoErrorCallback)
+		}
 
-	function setLocationOfCity(location){
-		var longitude = location.coords.longitude;
-		var latitude = location.coords.latitude;
+		function setLocationOfCity(location){
+			var longitude = location.coords.longitude;
+			var latitude = location.coords.latitude;
 
-		getCurrentTime(longitude, latitude).then(function(result){
-        	console.log(result)
-        	document.getElementById('currentTime').innerHTML = result['time'];
-        })
+			getCurrentTime(longitude, latitude).then(function(result){
+				console.log(result)
+				document.getElementById('currentTime').innerHTML = result['time'];
+			})
 
-		getWeatherInfo(longitude, latitude).then(function(result){
-			console.log(result);
+			getWeatherInfo(longitude, latitude).then(function(result){
+				console.log(result);
 
-			document.body.classList = "";
-			document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
-			document.getElementById('currentTown').innerHTML = result['name']
-			document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
-			document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
-			document.getElementById('barometer').innerHTML = parseInt(result['main']['pressure']);
-			document.getElementById('wind').innerHTML = parseInt(result['wind']['speed']);
-			var currentTime = result
-			var weather = result['weather'][0];
-			var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
-			console.log(dayOrNight);
-			console.log(weather['id'])
-			document.getElementById("weather_Icon").className = 'wi wi-owm-'+ dayOrNight + '-' + weather['id'];
-			document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
-		})
-	}
+				document.body.classList = "";
+				document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
+				document.getElementById('currentTown').innerHTML = result['name']
+				document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
+				document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
+				document.getElementById('barometer').innerHTML = parseInt(result['main']['pressure']);
+				document.getElementById('wind').innerHTML = parseInt(result['wind']['speed']);
+				var currentTime = result
+				var weather = result['weather'][0];
+				var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+				console.log(dayOrNight);
+				console.log(weather['id'])
+				document.getElementById("weather_Icon").className = 'wi wi-owm-'+ dayOrNight + '-' + weather['id'];
+				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
+			})
+		}
 
-	function geoErrorCallback(err){
+		function geoErrorCallback(err){
 
-	}
+		}
 
 
 	// using maxmind API for providing basic user information, city countrycode etc, through one of API methods geoip2.city
@@ -246,34 +246,52 @@
 
 	function determineTypeOfWeather(temperature, clouds) {
 		console.log(temperature);
-		if(temperature < 10){ return 'cold';}
-		else if( temperature < 25) { return 'normal';}
-		else {return 'sunny';}	
+		if(temperature < 10){ 
+			setTimeout(function(){
+				document.documentElement.style.setProperty('--main-bg-first-color', '#283e51');
+				document.documentElement.style.setProperty('--main-bg-second-color', '#4B79A1');
+			}, 100)
+			return 'cold';
+		}
+		else if( temperature < 25) { 
+			setTimeout(function(){
+				document.documentElement.style.setProperty('--main-bg-first-color', '#76b852');
+				document.documentElement.style.setProperty('--main-bg-second-color', '#8DC26F');
+			}, 100);
+			return 'normal';
+		}
+		else {
+			setTimeout(function(){
+				document.documentElement.style.setProperty('--main-bg-first-color', '#ca5f5e');
+				document.documentElement.style.setProperty('--main-bg-second-color', '#d68584');
+			}, 100);
+			return 'sunny';
+		}	
 	}
 
 	geoip2.city(onSuccess, onError);
 	// Use Geolocation API, add eventlistener on some button
 	//getGeolocationInfo()
-	</script>
+</script>
 
-	<script>
-		var temperatureElement = document.getElementById('temperatureElement');
-		var tempUnit = document.getElementById('tempUnit');
-		var anim = document.getElementById("transitionTrigger");
-		anim.addEventListener("transitionend", TransitionListener, false);
+<script>
+	var temperatureElement = document.getElementById('temperatureElement');
+	var tempUnit = document.getElementById('tempUnit');
+	var anim = document.getElementById("transitionTrigger");
+	anim.addEventListener("transitionend", TransitionListener, false);
 
-		function TransitionListener(event){
-			if(event.propertyName === 'transform'){
-				var fahrenheit = document.getElementById("switch1").checked;
-				toggleTemeprature(temperatureElement.innerHTML, fahrenheit);
-			}
+	function TransitionListener(event){
+		if(event.propertyName === 'transform'){
+			var fahrenheit = document.getElementById("switch1").checked;
+			toggleTemeprature(temperatureElement.innerHTML, fahrenheit);
 		}
+	}
 
 
-		function toggleTemeprature(temperature, fahrenheit){
-			temperatureElement.innerHTML = parseInt(temperature) + (fahrenheit || '-1') *32;
-			fahrenheit ? tempUnit.innerHTML = '&degF': tempUnit.innerHTML = '&degC';
-		}
-	</script>
+	function toggleTemeprature(temperature, fahrenheit){
+		temperatureElement.innerHTML = parseInt(temperature) + (fahrenheit || '-1') *32;
+		fahrenheit ? tempUnit.innerHTML = '&degF': tempUnit.innerHTML = '&degC';
+	}
+</script>
 </body>
 </html>
