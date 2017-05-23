@@ -104,6 +104,10 @@
 
 	</div>
 	<script>
+	//document.documentElement.style.setProperty('--main-bg-first-color', '#8e9eab');
+	//document.documentElement.style.setProperty('--main-bg-second-color', '#eef2f3');
+
+
 		var geolocationBtn =  document.getElementById('geolocationBtn');
 		geolocationBtn.addEventListener('click', getGeolocationInfo, false);
 
@@ -114,7 +118,7 @@
 
 		refreshBtn.addEventListener('click', refreshFn, false);
 
-
+ 
 		var input = document.getElementById('autoComplete');
 		var autocomplete = new google.maps.places.Autocomplete(input);
 		autocomplete.addListener('place_changed', function() {
@@ -251,6 +255,14 @@
 
 	function determineTypeOfWeather(temperature, clouds) {
 		console.log(temperature);
+
+		console.log(document.documentElement.style.getPropertyValue('--main-bg-first-color'));
+		var oldColor1 =  document.documentElement.style.getPropertyValue('--main-bg-first-color');
+		var oldColor2 =  document.documentElement.style.getPropertyValue('--main-bg-second-color');
+		var linearGradient = 'linear-gradient(' + oldColor1 + ', ' + oldColor2 + ')';
+		
+		document.body.style.setProperty('background-image', linearGradient);
+		
 		if(temperature < 10){ 
 			document.documentElement.style.setProperty('--main-bg-first-color', '#283e51');
 			document.documentElement.style.setProperty('--main-bg-second-color', '#4B79A1');
