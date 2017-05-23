@@ -2,6 +2,8 @@
 :root {
   --main-bg-first-color: #8e9eab;
   --main-bg-second-color: #eef2f3;
+  --main-bg-old-first-color: #8e9eab;
+  --main-bg-old-second-color: #eef2f3;
 }
 
 
@@ -10,7 +12,7 @@ body {
 	width: 100%;
 	height: 100vh;
 	color: white;
-	background: linear-gradient(#8e9eab, #eef2f3);
+	background: linear-gradient(var(--main-bg-old-first-color), var(--main-bg-old-second-color));
 	/*background-color: yellow;*/
 }
 
@@ -23,22 +25,31 @@ body:after {
 	height: 100vh;
 	border-radius: 0.3em;
 	background-image: linear-gradient(var(--main-bg-first-color), var(--main-bg-second-color));
-	transition: opacity 2s ease-out;
+	/*transition: opacity 2s ease-out;*/
 	z-index: 2;
 	opacity: 0;
 
+
 	/*background-image: linear-gradient(#F09819, #edde5d);*/
 }
-body.sunny:after{
-  opacity: 1;
+body.sunny::after{
+   animation: fadein 2s ease-in normal  forwards;
+
 }
 
-body.cold:after {
-  opacity: 1;
+body.cold::after {
+  animation: fadein 2s ease-in normal forwards;
+
 }
 
-body.normal:after {
-  opacity: 1;
+body.normal::after {
+  animation: fadein 2s ease-in normal forwards;
+
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 

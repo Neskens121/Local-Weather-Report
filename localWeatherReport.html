@@ -133,6 +133,7 @@
         getWeatherInfo(longitude, latitude).then(function(result){
         	console.log(result);
         	document.body.classList = "";
+        	void document.body.offsetWidth;
         	document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
         	document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
         	var currentTime = result
@@ -169,7 +170,10 @@
 				console.log(result);
 
 				document.body.classList = "";
+				void document.body.offsetWidth;
 				document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
+
+
 				document.getElementById('currentTown').innerHTML = result['name']
 				document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
 				document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
@@ -211,6 +215,7 @@
 			console.log(result);
 
 			document.body.classList = "";
+			void document.body.offsetWidth;
 			document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
 			document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
 			document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
@@ -247,24 +252,18 @@
 	function determineTypeOfWeather(temperature, clouds) {
 		console.log(temperature);
 		if(temperature < 10){ 
-			setTimeout(function(){
-				document.documentElement.style.setProperty('--main-bg-first-color', '#283e51');
-				document.documentElement.style.setProperty('--main-bg-second-color', '#4B79A1');
-			}, 100)
+			document.documentElement.style.setProperty('--main-bg-first-color', '#283e51');
+			document.documentElement.style.setProperty('--main-bg-second-color', '#4B79A1');
 			return 'cold';
 		}
 		else if( temperature < 25) { 
-			setTimeout(function(){
-				document.documentElement.style.setProperty('--main-bg-first-color', '#76b852');
-				document.documentElement.style.setProperty('--main-bg-second-color', '#8DC26F');
-			}, 100);
+			document.documentElement.style.setProperty('--main-bg-first-color', '#76b852');
+			document.documentElement.style.setProperty('--main-bg-second-color', '#8DC26F');
 			return 'normal';
 		}
 		else {
-			setTimeout(function(){
-				document.documentElement.style.setProperty('--main-bg-first-color', '#ca5f5e');
-				document.documentElement.style.setProperty('--main-bg-second-color', '#d68584');
-			}, 100);
+			document.documentElement.style.setProperty('--main-bg-first-color', '#ca5f5e');
+			document.documentElement.style.setProperty('--main-bg-second-color', '#d68584');
 			return 'sunny';
 		}	
 	}
