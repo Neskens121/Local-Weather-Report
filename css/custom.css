@@ -159,3 +159,34 @@ input.switch:checked ~ label:after
 	background: url('../magnifying-glass-2-32.gif') no-repeat scroll 95% 50%;;
 	padding-right: 30px;
 }
+
+
+
+.clock {
+	width: 30rem;
+	height: 30rem;
+	border: 20px solid grey;
+	border-radius: 50%;
+	margin: 50px auto;
+}
+
+.clock-face {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transform: translateY(-3px);
+}
+
+.hand {
+	width: 50%;
+	height: 6px;
+	background-color: black;
+	position: absolute;
+	top: 50%;
+	transform-origin: 100%;
+	transform: rotate(90deg);
+	transition: transform 0.05s;
+	transition-timing-function: cubic-bezier(0.22, 1.37, 1, 1);
+}
+
+
