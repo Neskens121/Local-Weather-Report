@@ -286,24 +286,43 @@
 	var secondHand = document.querySelector('.second-hand');
 	var minuteHand = document.querySelector('.minute-hand');
 	var hourHand = document.querySelector('.hour-hand');
+	var intervalId;
 
 	function setDate(time) {
-		//var date = new Date();
+
+		var minuteIterator = 0;
 
 		var seconds = Math.floor(Math.random() * (59 - 0)) + 0;
 		var minutes = time.slice(-2);
 		var hours = time.slice(-5,-3);
-		console.log(hours)
-
+		console.log(hours);
+		//var secondsDegrees = seconds;
 		var secondsDegrees = (seconds / 60 ) * 360 + 90;
 		var minutesDegrees = (minutes / 60 ) * 360 + 90;
 		var hoursDegrees = (hours / 12 ) * 360 + 90;
 
-		console.log(hoursDegrees)
+		function rotateClockHand(){
+			console.log(secondsDegrees)
+			secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+			minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+			hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+		}
 
-		secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
-		minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
-		hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+		(function(){
+			if (intervalId) {
+				clearInterval(intervalId);
+			}
+			intervalId = setInterval(function(){
+				secondsDegrees += 6;
+				console.log(Math.floor(secondsDegrees / 360));
+				if(Math.floor(secondsDegrees / 450) !== minuteIterator){
+					minutesDegrees += 6;
+					minuteIterator = Math.floor(secondsDegrees / 450);
+				}
+
+				rotateClockHand();
+			}, 1000);
+		})()
 	}
 
 	geoip2.city(onSuccess, onError);
