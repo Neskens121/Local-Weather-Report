@@ -98,104 +98,111 @@
 		<div class="row">
 			<input type="hidden" id="cityLat" name="cityLat" />
 		</div>
+		<div class="clock row">
+			<div class="clock-face">
+				<div class="hand hour-hand"></div>
+				<div class="hand minute-hand"></div>
+				<div class="hand second-hand"></div>
+			</div>
+		</div>
 		<div class="row">
 			<input type="hidden" id="cityLng" name="cityLng" />
 		</div>
 
 	</div>
+
 	<script>
 	//document.documentElement.style.setProperty('--main-bg-first-color', '#8e9eab');
 	//document.documentElement.style.setProperty('--main-bg-second-color', '#eef2f3');
 
+	var geolocationBtn =  document.getElementById('geolocationBtn');
+	geolocationBtn.addEventListener('click', getGeolocationInfo, false);
 
-		var geolocationBtn =  document.getElementById('geolocationBtn');
-		geolocationBtn.addEventListener('click', getGeolocationInfo, false);
-
-		var refreshBtn = document.getElementById('refreshBtn');
-		var refreshFn = function(){
-			return geoip2.city(onSuccess, onError);
-		}
-
-		refreshBtn.addEventListener('click', refreshFn, false);
+	var refreshBtn = document.getElementById('refreshBtn');
+	var refreshFn = function(){
+		return geoip2.city(onSuccess, onError);
+	}
 
  
-		var input = document.getElementById('autoComplete');
-		var autocomplete = new google.maps.places.Autocomplete(input);
-		autocomplete.addListener('place_changed', function() {
-			var place = autocomplete.getPlace();
-			document.getElementById('currentTown').innerHTML = place['formatted_address'];
-			var latitude = place['geometry']['location'].lat();
-			var longitude = place['geometry']['location'].lng();
-        //console.log(place.geometry.loacation.lat())
+	var input = document.getElementById('autoComplete');
+	var autocomplete = new google.maps.places.Autocomplete(input);
+	autocomplete.addListener('place_changed', function() {
+		var place = autocomplete.getPlace();
+		document.getElementById('currentTown').innerHTML = place['formatted_address'];
+		var latitude = place['geometry']['location'].lat();
+		var longitude = place['geometry']['location'].lng();
 
 
-        getCurrentTime(longitude, latitude).then(function(result){
-        	console.log(result)
-        	document.getElementById('currentTime').innerHTML = result['time'];
-        })
+		getCurrentTime(longitude, latitude).then(function(result){
+			console.log(result);
+			setDate(result['time']);
+			document.getElementById('currentTime').innerHTML = result['time'];
+		})
 
-        getWeatherInfo(longitude, latitude).then(function(result){
-        	console.log(result);
-        	document.body.classList = "";
-        	void document.body.offsetWidth;
-        	document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
-        	document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
-        	var currentTime = result
-        	var weather = result['weather'][0];
-        	var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+		getWeatherInfo(longitude, latitude).then(function(result){
+			console.log(result);
+			document.body.classList = "";
+			void document.body.offsetWidth;
+			document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
+			document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
+			var currentTime = result
+			var weather = result['weather'][0];
+			var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
 
-        	console.log(dayOrNight);
-        	console.log(weather['id'])
-        	document.getElementById("weather_Icon").className = 'wi wi-owm-'+ dayOrNight + '-' + weather['id'];
-        	document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
-        })
+			console.log(dayOrNight);
+			console.log(weather['id'])
+			document.getElementById("weather_Icon").className = 'wi wi-owm-'+ dayOrNight + '-' + weather['id'];
+			document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
+		})
 
-    });
-
-
-		function supportsGeolocation() {
-			return 'geolocation' in navigator;
-		}
-
-		function getGeolocationInfo(){
-			supportsGeolocation() && navigator.geolocation.getCurrentPosition(setLocationOfCity, geoErrorCallback)
-		}
-
-		function setLocationOfCity(location){
-			var longitude = location.coords.longitude;
-			var latitude = location.coords.latitude;
-
-			getCurrentTime(longitude, latitude).then(function(result){
-				console.log(result)
-				document.getElementById('currentTime').innerHTML = result['time'];
-			})
-
-			getWeatherInfo(longitude, latitude).then(function(result){
-				console.log(result);
-
-				document.body.classList = "";
-				void document.body.offsetWidth;
-				document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
+	});
 
 
-				document.getElementById('currentTown').innerHTML = result['name']
-				document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
-				document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
-				document.getElementById('barometer').innerHTML = parseInt(result['main']['pressure']);
-				document.getElementById('wind').innerHTML = parseInt(result['wind']['speed']);
-				var currentTime = result
-				var weather = result['weather'][0];
-				var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
-				console.log(dayOrNight);
-				console.log(weather['id'])
-				document.getElementById("weather_Icon").className = 'wi wi-owm-'+ dayOrNight + '-' + weather['id'];
-				document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
-			})
-		}
+	function supportsGeolocation() {
+		return 'geolocation' in navigator;
+	}
 
-		function geoErrorCallback(err){
+	function getGeolocationInfo(){
+		supportsGeolocation() && navigator.geolocation.getCurrentPosition(setLocationOfCity, geoErrorCallback)
+	}
 
-		}
+	function setLocationOfCity(location){
+		var longitude = location.coords.longitude;
+		var latitude = location.coords.latitude;
+
+		getCurrentTime(longitude, latitude).then(function(result){
+			console.log(result);
+			setDate(result['time']);
+			document.getElementById('currentTime').innerHTML = result['time'];
+		})
+
+		getWeatherInfo(longitude, latitude).then(function(result){
+			console.log(result);
+
+			document.body.classList = "";
+			void document.body.offsetWidth;
+			document.body.classList.add(determineTypeOfWeather(parseInt(result['main']['temp'])));
+
+
+			document.getElementById('currentTown').innerHTML = result['name']
+			document.getElementById('temperatureElement').innerHTML = parseInt(result['main']['temp']);
+			document.getElementById('humidity').innerHTML = parseInt(result['main']['humidity']);
+			document.getElementById('barometer').innerHTML = parseInt(result['main']['pressure']);
+			document.getElementById('wind').innerHTML = parseInt(result['wind']['speed']);
+			var currentTime = result
+			var weather = result['weather'][0];
+			var dayOrNight = weather['icon'].slice(-1) === 'd' ? 'day': 'night';
+			console.log(dayOrNight);
+			console.log(weather['id'])
+			document.getElementById("weather_Icon").className = 'wi wi-owm-'+ dayOrNight + '-' + weather['id'];
+			document.getElementById('weatherIcon').src = 'http://openweathermap.org/img/w/'+ weather['icon'] +'.png';
+		})
+	}
+
+		
+	function geoErrorCallback(err){
+
+	}
 
 
 	// using maxmind API for providing basic user information, city countrycode etc, through one of API methods geoip2.city
@@ -211,7 +218,8 @@
 
 
 		getCurrentTime(longitude, latitude).then(function(result){
-			console.log(result)
+			console.log(result);
+			setDate(result['time']);
 			document.getElementById('currentTime').innerHTML = result['time'];
 		})
 
@@ -278,6 +286,50 @@
 			document.documentElement.style.setProperty('--main-bg-second-color', '#d68584');
 			return 'sunny';
 		}	
+	}
+
+
+
+	var secondHand = document.querySelector('.second-hand');
+	var minuteHand = document.querySelector('.minute-hand');
+	var hourHand = document.querySelector('.hour-hand');
+	var intervalId;
+
+	function setDate(time) {
+
+		var minuteIterator = 0;
+
+		var seconds = Math.floor(Math.random() * (59 - 0)) + 0;
+		var minutes = time.slice(-2);
+		var hours = time.slice(-5,-3);
+		console.log(hours);
+		//var secondsDegrees = seconds;
+		var secondsDegrees = (seconds / 60 ) * 360 + 90;
+		var minutesDegrees = (minutes / 60 ) * 360 + 90;
+		var hoursDegrees = (hours / 12 ) * 360 + 90;
+
+		function rotateClockHand(){
+			console.log(secondsDegrees)
+			secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+			minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+			hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+		}
+
+		(function(){
+			if (intervalId) {
+				clearInterval(intervalId);
+			}
+			intervalId = setInterval(function(){
+				secondsDegrees += 6;
+				console.log(Math.floor(secondsDegrees / 360));
+				if(Math.floor(secondsDegrees / 450) !== minuteIterator){
+					minutesDegrees += 6;
+					minuteIterator = Math.floor(secondsDegrees / 450);
+				}
+
+				rotateClockHand();
+			}, 1000);
+		})()
 	}
 
 	geoip2.city(onSuccess, onError);
